@@ -39,7 +39,11 @@ class Clinica:
         produto = self.estoque.buscar_produto(codigo)
         if prontuario is None or produto is None:
             return False
-        if self.estoque.disponivel(codigo, hoje) < quantidade:
+        existente = prontuario.medicamentos.buscar("codigo", codigo)
+        total = quantidade
+        if existente is not None:
+            total += existente.quantidade
+        if self.estoque.disponivel(codigo, hoje) < total:
             return False
         return prontuario.adicionar_medicamento(codigo, produto.nome, quantidade, produto.preco_venda)
 
@@ -71,7 +75,7 @@ class Clinica:
         self.atendimento.liberar_consultorio(prontuario.consultorio)
         return True
 
-    def fechar_prontuario(self, numero, forma, parcelas, hoje):
+    def fechar_prontuario(self, numero, forma, parcelas, hoje, pagador=None):
         prontuario = self.prontuarios.buscar(numero)
         if prontuario is None:
             return None, "Prontuário não encontrado."
@@ -80,9 +84,13 @@ class Clinica:
         for med in prontuario.medicamentos:
             if self.estoque.disponivel(med.codigo, hoje) < med.quantidade:
                 return None, "Estoque insuficiente de " + med.nome + "."
-        pagamento = self.pagamentos.registrar(prontuario.nome_tutor, prontuario.numero, forma, parcelas,
+        if pagador is None or not pagador.strip():
+            pagador = prontuario.nome_tutor
+
+        pagamento = self.pagamentos.registrar(pagador, prontuario.numero, forma, parcelas,
                                               prontuario.valor_medicamentos(),
                                               prontuario.valor_procedimentos())
+            
         if pagamento is None:
             return None, "Forma de pagamento inválida."
         for med in prontuario.medicamentos:
