@@ -53,6 +53,9 @@ class Clinica:
         if not nome or not isinstance(valor, (int, float)) or valor < 0:
             return False
         prontuario = self.prontuarios.buscar(numero)
+        if prontuario is None:
+            return False
+        return prontuario.adicionar_procedimento(nome, valor)
 
     def remover_procedimento(self, numero, nome):
         prontuario = self.prontuarios.buscar(numero)
