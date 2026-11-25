@@ -1,3 +1,4 @@
+from datetime import date
 from estruturas.fila import Fila
 from estruturas.lista import Lista
 
@@ -46,6 +47,8 @@ class Estoque:
     def cadastrar_produto(self, codigo, nome, preco_venda, minimo):
         if self.buscar_produto(codigo) is not None:
             return None
+        if preco_venda < 0 or minimo < 0:
+            return None
         produto = Produto(codigo, nome, preco_venda, minimo)
         self.produtos.adicionar(produto)
         return produto
@@ -55,11 +58,26 @@ class Estoque:
 
     def comprar_lote(self, codigo, fornecedor, preco_compra, data_compra, validade, quantidade):
         produto = self.buscar_produto(codigo)
-        if produto is None:
+        if produto is None or quantidade <= 0 or preco_compra < 0:
             return None
         lote = Lote(self.proximo_lote, fornecedor, preco_compra, data_compra, validade, quantidade)
         self.proximo_lote += 1
-        produto.lotes.enfileirar(lote)
+        lotes_ordenados = Fila()
+        inserido = False
+
+        while not produto.lotes.vazia():
+            atual = produto.lotes.desenfileirar()
+
+            if not inserido and lote.data_compra < atual.data_compra:
+                lotes_ordenados.enfileirar(lote)
+                inserido = True
+
+            lotes_ordenados.enfileirar(atual)
+
+        if not inserido:
+            lotes_ordenados.enfileirar(lote)
+            
+        produto.lotes = lotes_ordenados
         return lote
 
     def descartar_vencidos(self, hoje):
@@ -102,7 +120,7 @@ class Estoque:
 
     def ajustar_quantidade(self, codigo, numero_lote, nova_quantidade):
         produto = self.buscar_produto(codigo)
-        if produto is None:
+        if produto is None or nova_quantidade < 0:
             return False
         for lote in produto.lotes:
             if lote.numero == numero_lote:
@@ -111,6 +129,7 @@ class Estoque:
         return False
 
     def abaixo_do_minimo(self):
+        self.descartar_vencidos(date.today())
         alertas = Lista()
         for produto in self.produtos:
             if produto.total() < produto.minimo:
