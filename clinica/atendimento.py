@@ -4,7 +4,7 @@ from estruturas.lista import Lista
 
 
 class Chegada:
-    def __init__(self, nome_animal, nome_tutor, queixa, emergencia):
+    def __init__(self, nome_animal, nome_tutor, queixa, emergencia, cpf_tutor):
         self.nome_animal = nome_animal
         self.nome_tutor = nome_tutor
         self.queixa = queixa
@@ -26,8 +26,8 @@ class Atendimento:
         for numero in range(1, quantidade_consultorios + 1):
             self.consultorios.adicionar(Consultorio(numero))
 
-    def registrar_chegada(self, nome_animal, nome_tutor, queixa, emergencia=False):
-        chegada = Chegada(nome_animal, nome_tutor, queixa, emergencia)
+    def registrar_chegada(self, nome_animal, nome_tutor, queixa, emergencia=False, cpf_tutor=None)):
+        chegada = Chegada(nome_animal, nome_tutor, queixa, emergencia, cpf_tutor)
         if emergencia:
             self.fila_emergencia.enfileirar(chegada)
         else:
