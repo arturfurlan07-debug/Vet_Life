@@ -1,115 +1,81 @@
-# Vet Life – Clínica Veterinária
+Vet Life
 
-## Sobre o projeto
+Sistema de gerenciamento de uma clínica veterinária desenvolvido em Python para a disciplina de Estrutura de Dados. O sistema gerencia todo o ciclo de atendimento, desde o cadastro do animal até o fechamento do prontuário e pagamento.
 
-O Vet Life é um sistema de gerenciamento de uma clínica veterinária desenvolvido em Python para a disciplina de Estrutura de Dados.
-
-O objetivo é gerenciar o ciclo de atendimento de um animal, desde sua chegada à clínica até o fechamento do prontuário e pagamento, utilizando estruturas de dados implementadas manualmente.
-
-## Funcionalidades
+Funcionalidades
 
 - Cadastro, busca e remoção de tutores e animais.
-- Fila de atendimento normal e emergencial.
-- Controle de ocupação dos consultórios.
-- Diagnóstico utilizando uma árvore de sistemas do animal.
-- Controle de estoque de medicamentos, vacinas e materiais.
-- Controle de lotes, validade e registro de perdas.
-- Ajuste de estoque e alertas de quantidade mínima.
+- Atendimento por ordem de chegada, com prioridade para emergências.
+- Controle de consultórios.
+- Diagnóstico por meio de uma árvore de sistemas do animal.
+- Controle de estoque, lotes, validade e perdas.
+- Ajuste de inventário e alertas de estoque mínimo.
 - Gerenciamento de prontuários, medicamentos e procedimentos.
-- Alta, fechamento do prontuário e pagamento.
-- Relatórios de consumo, pagamentos e perdas.
-- Simulação de um atendimento completo.
+- Alta, pagamento e relatórios de consumo.
 
-## Estruturas de dados utilizadas
+Estruturas de dados
 
-As estruturas foram implementadas em classes próprias, separando as estruturas de dados das regras de funcionamento da clínica.
+O projeto utiliza implementações próprias de listas encadeadas, filas e árvores N-árias, separadas das regras de funcionamento da clínica.
 
-- **Lista encadeada:** utilizada no armazenamento de tutores, animais, produtos, prontuários e registros.
-- **Fila:** utilizada no controle de atendimento e dos lotes de medicamentos.
-- **Árvore N-ária:** utilizada para representar os sistemas, órgãos e estruturas do animal durante o diagnóstico.
+Lista + Lista — Tutores e animais
 
-## Combinações de estruturas de dados
+Classes: "Lista", "CadastroTutores", "Tutor" e "Animal".
 
-### 1. Lista + Lista — Tutores e animais
+Métodos: "cadastrar_tutor()", "buscar_tutor()", "cadastrar_animal()" e "buscar_animal()".
 
-**Classes envolvidas:** `Lista`, `CadastroTutores` e `Tutor`.
+Cada tutor possui sua própria lista de animais, permitindo cadastrar novos animais sem limite pré-definido. A busca ocorre primeiro pelo CPF do tutor e depois pelo nome do animal.
 
-**Métodos envolvidos:** `cadastrar_tutor()`, `buscar_tutor()`, `cadastrar_animal()`, `buscar_animal()` e `remover_animal()`.
+Uma única lista poderia exigir a repetição dos dados dos tutores, dificultando a organização dos registros.
 
-O cadastro possui uma lista de tutores, e cada tutor possui sua própria lista de animais. Para buscar um animal, primeiro é localizado o tutor pelo CPF e, depois, o animal pelo nome.
+Fila + Fila — Atendimento prioritário
 
-Essa combinação permite que cada tutor tenha uma quantidade dinâmica de animais, mantendo seus dados organizados.
+Classes: "Fila" e "Atendimento".
 
-Utilizar uma única lista exigiria misturar os registros dos tutores e animais ou repetir informações dos tutores, dificultando o gerenciamento.
+Métodos: "registrar_chegada()", "proximo()" e "chamar_proximo()".
 
-### 2. Fila + Fila — Atendimento prioritário
+Duas filas independentes organizam os atendimentos normais e emergenciais. A fila de emergência possui prioridade, mantendo a ordem de chegada dentro de cada categoria.
 
-**Classes envolvidas:** `Fila` e `Atendimento`.
+Uma única fila convencional exigiria percorrer ou reorganizar seus elementos para priorizar emergências.
 
-**Métodos envolvidos:** `registrar_chegada()`, `proximo()` e `chamar_proximo()`.
+Lista + Fila — Estoque
 
-O atendimento utiliza duas filas: uma para casos normais e outra para emergências.
+Classes: "Lista", "Fila", "Estoque", "Produto" e "Lote".
 
-O sistema verifica primeiro a fila de emergência. Caso esteja vazia, o próximo animal é retirado da fila normal. Ambas respeitam a ordem de chegada dentro de sua categoria.
+Métodos: "buscar_produto()", "comprar_lote()" e "baixar()".
 
-Uma única fila comum não permitiria priorizar emergências sem realizar buscas ou reorganizar seus elementos.
+Cada produto armazenado na lista possui uma fila de lotes organizada pela data de compra, garantindo que os lotes mais antigos sejam consumidos primeiro.
 
-### 3. Lista + Fila — Estoque de medicamentos
+Uma única estrutura dificultaria a organização dos lotes por produto e o controle da ordem de consumo.
 
-**Classes envolvidas:** `Lista`, `Fila`, `Estoque`, `Produto` e `Lote`.
+Árvore N-ária — Diagnóstico
 
-**Métodos envolvidos:** `cadastrar_produto()`, `buscar_produto()`, `comprar_lote()`, `baixar()` e `descartar_vencidos()`.
+A árvore representa a hierarquia dos sistemas, órgãos e estruturas do animal. Cada nó pode possuir vários filhos.
 
-O estoque utiliza uma lista de produtos, em que cada produto possui uma fila de lotes.
+A exibição utiliza o percurso em profundidade em pré-ordem. Os nós podem ser localizados pelo nome ou código e marcados como alterados.
 
-A lista permite localizar os produtos pelo código, enquanto a fila organiza a saída dos lotes pelo princípio FIFO (First In, First Out). Para consumir primeiro os lotes mais antigos, eles devem estar organizados em ordem cronológica de compra.
+Complexidade das operações
 
-Essa combinação facilita o controle individual de quantidade, fornecedor, preço de compra e validade de cada lote.
+Operação| Complexidade
+Inserção, busca e remoção na lista| O(n)
+Inserção e remoção na fila| O(1)
+Consulta ao próximo animal| O(1)
+Busca de um nó na árvore| O(n)
+Visitação dos nós em pré-ordem| O(n)
+Busca de um animal| O(t + a)
+Inserção ordenada de um lote| O(p + l)
 
-Utilizar uma única estrutura dificultaria a separação dos lotes de cada produto e o controle da ordem de consumo.
+Considerando o pior caso, "n" representa a quantidade de elementos ou nós, "t" os tutores, "a" os animais do tutor, "p" os produtos e "l" os lotes do produto.
 
-## Árvore de diagnóstico
+Organização do projeto
 
-A árvore de diagnóstico utiliza as classes `Arvore` e `NoArvore`.
+- "main.py" — Menu interativo e simulação de atendimento.
+- "clinica/" — Regras de funcionamento da clínica.
+- "estruturas/" — Implementação das estruturas de dados.
 
-Cada nó pode possuir vários filhos, representando a hierarquia dos sistemas, órgãos e estruturas do animal.
+Como executar
 
-A exibição utiliza o percurso em profundidade em pré-ordem, apresentando primeiro o nó atual e depois seus filhos.
+Com o Python 3 instalado, execute o seguinte comando na pasta principal do projeto:
 
-Durante o diagnóstico, é possível marcar estruturas identificadas por código como alteradas.
+python main.py
 
-## Organização do projeto
-
-- `main.py` — Menu principal e simulação de atendimento.
-- `clinica/` — Classes e regras de funcionamento da clínica.
-- `estruturas/` — Implementação das estruturas de dados e seus testes.
-
-## Como executar
-
-É necessário possuir o Python 3 instalado.
-
-Abra o terminal na pasta principal do projeto e execute:
-
-`python main.py`
-
-## Menu principal
-
-1. Tutores e animais
-2. Atendimento
-3. Prontuário
-4. Estoque
-5. Relatórios
-6. Simular um atendimento completo
-0. Sair
-
-O sistema permite realizar as operações manualmente pelo menu ou utilizar a opção de simulação automática.
-
-## Tecnologias utilizadas
-
-- Python 3
-- Git
-- GitHub
-
-## Finalidade acadêmica
-
-Projeto desenvolvido para a disciplina de Estrutura de Dados, com o objetivo de aplicar os conceitos de listas encadeadas, filas, árvores e combinações de estruturas de dados em um sistema de gerenciamento de clínica veterinária.
+O sistema permite realizar um atendimento completo manualmente pelo menu ou utilizar a opção de simulação automática.
