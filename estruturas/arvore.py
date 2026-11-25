@@ -30,7 +30,7 @@ class Arvore:
         return self._buscar(self.raiz, codigo)
 
     def _buscar(self, no, codigo):
-        if no.codigo == codigo:
+        if no.codigo == codigo or no.nome.lower() == codigo.lower():
             return no
         for filho in no.filhos:
             achado = self._buscar(filho, codigo)
