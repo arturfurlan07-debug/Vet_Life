@@ -33,7 +33,7 @@ class Clinica:
                                       chegada.cpf_tutor, veterinario, consultorio.numero)
 
     def adicionar_medicamento(self, numero, codigo, quantidade, hoje):
-         if not isinstance(quantidade, int) or quantidade <= 0:
+        if not isinstance(quantidade, int) or quantidade <= 0:
             return False
         prontuario = self.prontuarios.buscar(numero)
         produto = self.estoque.buscar_produto(codigo)
