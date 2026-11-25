@@ -33,6 +33,8 @@ class Clinica:
                                       chegada.cpf_tutor, veterinario, consultorio.numero)
 
     def adicionar_medicamento(self, numero, codigo, quantidade, hoje):
+         if not isinstance(quantidade, int) or quantidade <= 0:
+            return False
         prontuario = self.prontuarios.buscar(numero)
         produto = self.estoque.buscar_produto(codigo)
         if prontuario is None or produto is None:
@@ -48,10 +50,9 @@ class Clinica:
         return prontuario.remover_medicamento(codigo)
 
     def adicionar_procedimento(self, numero, nome, valor):
-        prontuario = self.prontuarios.buscar(numero)
-        if prontuario is None:
+        if not nome or not isinstance(valor, (int, float)) or valor < 0:
             return False
-        return prontuario.adicionar_procedimento(nome, valor)
+        prontuario = self.prontuarios.buscar(numero)
 
     def remover_procedimento(self, numero, nome):
         prontuario = self.prontuarios.buscar(numero)
@@ -82,7 +83,8 @@ class Clinica:
         if pagamento is None:
             return None, "Forma de pagamento inválida."
         for med in prontuario.medicamentos:
-            self.estoque.baixar(med.codigo, med.quantidade, hoje)
+            if not self.estoque.baixar(med.codigo, med.quantidade, hoje):
+                return None, "Não foi possível baixar o estoque de " + med.nome + "."
             self.consumos.registrar(prontuario, med)
         prontuario.fechar()
         self.prontuarios.remover(numero)
