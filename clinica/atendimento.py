@@ -24,7 +24,7 @@ class Atendimento:
         self.fila_normal = Fila()
         self.consultorios = Lista()
         for numero in range(1, quantidade_consultorios + 1):
-            self.consultorios.adicionar(Consultorio(numero))
+            self.consultorios.adicionar(Consultorio(numero)
 
     def registrar_chegada(self, nome_animal, nome_tutor, queixa, emergencia=False, cpf_tutor=None)):
         chegada = Chegada(nome_animal, nome_tutor, queixa, emergencia, cpf_tutor)
