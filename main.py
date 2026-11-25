@@ -225,12 +225,12 @@ def menu_prontuario(c):
                 print("Prontuário não encontrado.")
                 continue
             p.diagnostico.exibir()
-            codigo = input("Código do item alterado (Enter para sair): ")
+            codigo = input("Nome ou código do item alterado (Enter para sair): ")
             if codigo != "":
                 if p.diagnostico.marcar_alterado(codigo):
                     print("Item marcado como Alterado.")
                 else:
-                    print("Código não encontrado.")
+                    print("Item não encontrado.")
         elif opcao == "3":
             numero = ler_numero("Número do prontuário: ")
             codigo = input("Código do medicamento: ")
@@ -262,6 +262,12 @@ def menu_prontuario(c):
         elif opcao == "7":
             if c.dar_alta(ler_numero("Número do prontuário: ")):
                 print("Alta registrada. Consultório liberado.")
+                proximo = c.atendimento.proximo()
+                if proximo is not None:
+                    print("Próximo animal:", proximo.nome_animal,
+                          "| Tutor:", proximo.nome_tutor)
+                else:
+                    print("Nenhum animal na espera.")
             else:
                 print("Prontuário não encontrado ou alta já registrada.")
         elif opcao == "8":
@@ -276,7 +282,8 @@ def menu_prontuario(c):
                 parcelas = ler_numero("Número de parcelas (1 = à vista): ")
             else:
                 forma = "DINHEIRO"
-            pagamento, erro = c.fechar_prontuario(numero, forma, parcelas, hoje)
+            pagador = input("Nome do pagador (Enter para usar o tutor): ")
+            pagamento, erro = c.fechar_prontuario(numero, forma, parcelas, hoje, pagador)
             if pagamento is None:
                 print("Não foi possível fechar:", erro)
             else:
