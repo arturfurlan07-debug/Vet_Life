@@ -2,6 +2,8 @@ Vet Life
 
 Sistema de gerenciamento de uma clínica veterinária desenvolvido em Python para a disciplina de Estrutura de Dados. O sistema gerencia todo o ciclo de atendimento, desde o cadastro do animal até o fechamento do prontuário e pagamento.
 
+*LINK DA APRESENTAÇÃO*: https://youtu.be/TrMUGA2TB3E
+
 Funcionalidades
 
 - Cadastro, busca e remoção de tutores e animais.
